@@ -1,0 +1,80 @@
+***GET LETTERS*** [1]
+starts with
+ends with
+the _ letter  "3rd"
+how many vowels
+how many letters?
+
+
+**background INFO** [CLUE]
+origin/time created
+rhymes with??
+part of speech
+
+
+**CLUES**
+words described by / describes
+words that have similar meaning
+
+#def(risk) - will look up 4 words and display all of them..could throw you off!
+
+
+**FUN**
+words that usally come before or after?
+
+
+
+
+start with 100 points..
+minus one point every 2 seconds.
+physical = minus 2
+meaning = minus 5
+
+
+  API.saveWord({
+    title: "Little"
+  })
+  .then(console.log("LL"))
+  .catch(err => console.log(err));
+
+  API.getWords().then(res => console.log(res))
+
+
+
+          {/* /* {this.state.search.length ? (
+          this.state.categories.map(topic => (
+            <ActionButton
+              key={this.state.categories.toString()}>
+            </ActionButton>
+
+          ))
+
+        ) : (
+            <h2>Nothing</h2>
+          )} */ 
+
+
+          API.InsNoun(query).then((response) => {
+          let categories = (response.data.slice(0, 6))
+          this.setState({
+            categories: categories
+          })})
+
+          
+    // API.Thesaurus(query).then((res) => {res.data[0].fl && res.data[0].meta ? this.setState({ speech: res.data[0].fl, syns:res.data[0].meta.syns, ants: res.data[0].meta.ants )} : console.log("fail"))}
+
+    // this.setState{(
+    //   syns: res.data[0].meta.syns
+    // )}
+    // 
+    // res.data[0].shortdef ? console.log("y00o") : console.log("no class res"))
+    //  defnote ? 
+    //   // this.setState({ speech: res.data[0].fl }).then(this.GetHelp(res.data[0].fl, query))
+    //  console.log("yes") : console.log("no class res"))
+    // .then(res.data[0].meta.syns ? this.setState({ syns: res.data[0].meta.syns }) : console.log("no class res"))
+    // .then(res.data[0].meta.ants ? this.setState({ ants: res.data[0].meta.ants }) : console.log("no class res"))
+    // )
+      //   this.setState({
+      //   sup: res.data[0],
+      //   date: res.data[0].date
+      // 
