@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const db = require("../Models/Word");
+const db = require("../server/Database/models");
 
 // This file empties the Words collection and inserts the Words below
 
@@ -17,8 +17,7 @@ const WordSeed = [
     }
 ]
 
-db.Word.remove({})
-  .then(() => db.Word.collection.insertMany(WordSeed))
+db.Word.collection.insertMany(WordSeed)
   .then(data => {
     console.log(data.result.n + " records inserted!");
     process.exit(0);

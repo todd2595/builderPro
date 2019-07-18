@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const WordController = require("../../Controllers/WordController");
+const WordController = require("../../Database/Controllers/WordController");
 
 router.route("/words")
   .post(WordController.create);

@@ -10,11 +10,11 @@ function ActionButton(props) {
     case "danger":
       var a = "btn btn-danger"
       break;
-      default: 
+    default:
       var a = "btn btn-warning"
   }
   return (
-    <button type="button" {...props} className= {a} >{props.value}
+    <button type="button" {...props} className={a} >{props.value}
     </button>
 
   );

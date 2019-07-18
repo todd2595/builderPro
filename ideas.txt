@@ -78,3 +78,45 @@ meaning = minus 5
       //   sup: res.data[0],
       //   date: res.data[0].date
       // 
+   passport.use(new LocalStrategy(
+        function(username, password, done) {
+          User.findOne({ username: username }, function (err, user) {
+            if (err) { return done(err); }
+            if (!user) { return done(null, false); }
+            if (!user.verifyPassword(password)) { return done(null, false); }
+            return done(null, user);
+          });
+        }
+      ));
+
+      
+            
+
+ <>
+ <div class="jumbotron jumbotron-fluid">
+     <div class="container">
+         <h1 class="display-4">Guess WHAT?</h1>
+         <p class="lead">Select Single or Multiplayer!</p>
+     </div>
+ </div>
+ <Row>
+     <Col size="md-12">
+         <button type="button" onClick={() => this.handleClick(1)} className="btn btn-primary btn-lg btn-block">Single</button>
+         <button type="button" onClick={() => this.handleClick(2)} className="btn btn-secondary btn-lg btn-block">Multiplayer</button>
+     </Col>
+ </Row>
+
+
+ {this.state.players ? (
+     <Row>
+         <Form
+             value={this.state.search}
+             handleInputChange={this.handleInputChange}
+             handleFormSubmit={this.handleFormSubmit}
+         ></Form>
+     </Row>) : (
+         <h2> Nothing </h2>
+
+     )
+ }
+</>

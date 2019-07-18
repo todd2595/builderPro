@@ -8,7 +8,7 @@ import NavBar from "../Components/NavBar";
 import Wrapper from "../Components/Wrapper";
 import Game from "../Components/Game";
 import timer from "../Pages/Timer"
-import Timer from '../Pages/Timer';
+// import Timer from '../Pages/Timer';
 import { callbackify } from 'util';
 
 
@@ -22,27 +22,35 @@ class Home extends React.Component {
       calls: [],
       word: {},
       moreOfWord: {},
-      results:{}
+      results: {},
+      userGuess: "",
+      hasGuessed: false,
+      seconds: 0
     };
   }
-  TypeOf = (word) => { return this.state.class }
-  Categories = (word) => { return this.state.categories }
+
+  tick() {
+    this.setState(state => ({
+      seconds: state.seconds + 1
+    }));
+  }
+
+  TypeOf = (word) => { return this.state.class.filter((elem, index) => index <= 5).join(' ') }
+  Categories = (word) => { return this.state.categories.map(elem => elem.word).join(' ') }
   Ants = (word) => { return this.state.word.meta.ants[0] }
   Syns = (word) => { return this.state.word.meta.syns[0] }
   definition = (word) => { return this.state.word.shortdef }
   partOfSpeech = (word) => { return this.state.word.fl }
   firstLetter = (word) => word.charAt(0)
   lastLetter = (word) => word[word.length - 1]
-  Xletter = (word) => {
-    let x = window.prompt("Find the  __ letter");
-    return word.substring(x - 1, x)
-  }
+  Xletter = (word) => { let x = window.prompt("Find the  __ letter"); return word.substring(x - 1, x) }
   vowelCount = (word) => {
     let m = word.match(/[aeiou]/gi);
     if (m === null) { return "0" }
     else { return (m.length) }
   }
   letterCount = (word) => word.length
+
 
   testing = () => {
     if (this.state.speech) {
@@ -55,7 +63,10 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-
+    this.interval = setInterval(() => this.tick(), 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   searchWords = (query) => {
@@ -112,116 +123,149 @@ class Home extends React.Component {
     console.log(childData)
   }
 
-
-  HandleActionButton = (cb, value, array) => {
-    if (array.indexOf(value) === -1) {
-      let results = cb(this.state.search)
-      this.setState({
-        calls: [...this.state.calls, value, results],
-        results: { ...this.state.results, [value]: { results } }
-      })
-    }
-    else {
-      console.log("Try a different button")
-    }
+  HandleGuess = (event) => {
+    event.preventDefault();
+    this.setState({
+      value: event.target.value
+    });
+    let str = this.state.userGuess.toLowerCase().trim()
+ console.log(str);
+ if( str === this.state.search){
+  //  alert("you WIN!")
+  console.log("You win!")
+  console.log(this.state.seconds)
+ }
   }
 
-  render() {
-    return (
-      <Container>
-        <Timer></Timer>
-        <Form
-          value={this.state.search}
-          handleInputChange={this.handleInputChange}
-          handleFormSubmit={this.handleFormSubmit}
-        ></Form>
 
-        <Row>
-          <Col size="md-4">
-            <ActionButton
-              type="success"
-              value={"Letter Count"}
-              onClick={() => this.HandleActionButton(this.letterCount, "Letter Count", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type="success"
-              value={"Part of Speech"}
-              onClick={() => this.HandleActionButton(this.partOfSpeech, "Part of Speech", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type="success"
-              value={"First Letter"}
-              onClick={() => this.HandleActionButton(this.firstLetter, "First Letter", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type="success"
-              value={"Last Letter"}
-              onClick={() => this.HandleActionButton(this.lastLetter, "Last Letter", this.state.calls)}>
-            </ActionButton>
-          </Col>
-          <Col size="md-4">
-            <ActionButton
-              type="success"
-              value={"X Letter"}
-              onClick={() => this.HandleActionButton(this.Xletter, "X letter", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type="success"
-              value={"Vowel Count"}
-              onClick={() => this.HandleActionButton(this.vowelCount, "Vowel Count", this.state.calls)}>
-            </ActionButton>
-          </Col>
-          <Col size="md-4">
-            <ActionButton
-              value={"Type of"}
-              onClick={() => this.HandleActionButton(this.TypeOf, "Type Of", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              value={"Categories"}
-              onClick={() => this.HandleActionButton(this.Categories, "Categories", this.state.calls)}>
-            </ActionButton>
-          </Col>
-        </Row>
+HandleActionButton = (cb, value, array) => {
+  if (array.indexOf(value) === -1) {
+    let results = cb(this.state.search)
+    // if( typeof(results) === 'object' ){
+    //   console.log("object")
+    // }
+    this.setState({
+      calls: [...this.state.calls, value, results]
+    })
+  }
+  else {
+    console.log("Try a different button")
+  }
+}
 
-        <Row>
-          <Col size="md-6">
-            <ActionButton
-              type={"danger"}
-              value={"Definition"}
-              onClick={() => this.HandleActionButton(this.definition, "Definition", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type={"danger"}
-              value={"Syns"}
-              onClick={() => this.HandleActionButton(this.Syns, "Syns", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type={"danger"}
-              value={"Ants"}
-              onClick={() => this.HandleActionButton(this.Ants, "Ants", this.state.calls)}>
-            </ActionButton>
-          </Col>
-        </Row>
+render() {
+  return (
+    <Container>
+      <Form
+        value={this.state.search}
+        name={"search"}
+        handleInputChange={this.handleInputChange}
+        handleFormSubmit={this.handleFormSubmit}
+      ></Form>
 
-        <Wrapper>
-          {this.state.calls.length && this.state.search ? (
+      <Row>
+        <Col size="md-4">
+          <ActionButton
+            type="success"
+            value={"Letter Count"}
+            onClick={() => this.HandleActionButton(this.letterCount, "Letter Count", this.state.calls)}>
+          </ActionButton>
+          <ActionButton
+            type="success"
+            value={"Part of Speech"}
+            onClick={() => this.HandleActionButton(this.partOfSpeech, "Part of Speech", this.state.calls)}>
+          </ActionButton>
+          <ActionButton
+            type="success"
+            value={"First Letter"}
+            onClick={() => this.HandleActionButton(this.firstLetter, "First Letter", this.state.calls)}>
+          </ActionButton>
+          <ActionButton
+            type="success"
+            value={"Last Letter"}
+            onClick={() => this.HandleActionButton(this.lastLetter, "Last Letter", this.state.calls)}>
+          </ActionButton>
+        </Col>
+        <Col size="md-4">
+          <ActionButton
+            type="success"
+            value={"X Letter"}
+            onClick={() => this.HandleActionButton(this.Xletter, "X letter", this.state.calls)}>
+          </ActionButton>
+          <ActionButton
+            type="success"
+            value={"Vowel Count"}
+            onClick={() => this.HandleActionButton(this.vowelCount, "Vowel Count", this.state.calls)}>
+          </ActionButton>
+        </Col>
+        <Col size="md-4">
+          <ActionButton
+            value={"Type of"}
+            onClick={() => this.HandleActionButton(this.TypeOf, "Type Of", this.state.calls)}>
+          </ActionButton>
+          <ActionButton
+            value={"Categories"}
+            onClick={() => this.HandleActionButton(this.Categories, "Categories", this.state.calls)}>
+          </ActionButton>
+        </Col>
+      </Row>
 
-            <List>
-              {this.state.calls.map(call =>
-                (
-                  <ListItem key={call}>{call}
-                  </ListItem>
-                ))}
-            </List>
-          ) : (
-              <h3>No Results to Display</h3>
-            )}
+      <Row>
+        <Col size="md-6">
+          <ActionButton
+            type={"danger"}
+            value={"Definition"}
+            onClick={() => this.HandleActionButton(this.definition, "Definition", this.state.calls)}>
+          </ActionButton>
+          <ActionButton
+            type={"danger"}
+            value={"Syns"}
+            onClick={() => this.HandleActionButton(this.Syns, "Syns", this.state.calls)}>
+          </ActionButton>
+          <ActionButton
+            type={"danger"}
+            value={"Ants"}
+            onClick={() => this.HandleActionButton(this.Ants, "Ants", this.state.calls)}>
+          </ActionButton>
+        </Col>
+      </Row>
+      <Row>
+        <Col size="md-12">
+          <button type="button" onClick={() => this.setState({hasGuessed:true})} className="btn btn-primary btn-lg btn-block">Guess!</button>
+
+        </Col>
+      </Row>
+
+      <Wrapper>
+        {this.state.calls.length && this.state.search ? (
+
           <List>
-
+            {this.state.calls.map((call) =>
+              (
+                <ListItem key={call}>{call}
+                </ListItem>
+              ))}
           </List>
-        </Wrapper>
-      </Container>
-    );
-  }
+        ) : (
+            <h3>No Results to Display</h3>
+          )}
+        <List>
+          {this.state.hasGuessed ? (
+            
+            <Form
+            value={this.state.userGuess}
+            handleInputChange={this.handleInputChange}
+            handleFormSubmit={this.HandleGuess}
+            name={"userGuess"}
+
+          ></Form>
+          ) : <h3>No Results to Display</h3>
+          }
+
+        </List>
+      </Wrapper>
+    </Container>
+  );
+}
 }
 export default Home;
