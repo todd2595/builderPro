@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 
-const WordSchema = new Schema({
+const wordSchema = new Schema({
     title: { type: String, required: true },
     key: ObjectId
   });
   
-  const Word = mongoose.model("Word", WordSchema);
+  const word = mongoose.model("word", wordSchema);
   
-  module.exports = Word;
+  module.exports = word;
   

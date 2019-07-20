@@ -2,10 +2,10 @@ const router = require("express").Router();
 const WordController = require("../../Database/Controllers/WordController");
 
 router.route("/words")
-  .post(WordController.create);
+.post(WordController.create);
 
 router.route("/saved")
-.get(WordController.findAll)
+.get(WordController.findAll);
 
 // Matches with "/api/books/:id"
 router

@@ -1,5 +1,5 @@
 module.exports = {
-    Word: require("./Word"),
+    word: require("./Word"),
     User: require("./User")
   };
   

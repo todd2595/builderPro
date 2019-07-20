@@ -45,48 +45,30 @@ class SignupForm extends Component {
 
 		return (
 			<div className="SignupForm">
-
-				<form className="form-horizontal">
-					<div className="form-group">
-						<div className="col-1 col-ml-auto">
-							<label className="form-label" htmlFor="username">Username</label>
-						</div>
-						<div className="col-3 col-mr-auto">
-							<input className="form-input"
-								type="text"
-								id="username"
-								name="username"
-								placeholder="Username"
-								value={this.state.username}
-								onChange={this.handleChange}
-							/>
-						</div>
-					</div>
-					<div className="form-group">
-						<div className="col-1 col-ml-auto">
-							<label className="form-label" htmlFor="password">Password: </label>
-						</div>
-						<div className="col-3 col-mr-auto">
-							<input className="form-input"
-								placeholder="password"
-								type="password"
-								name="password"
-								value={this.state.password}
-								onChange={this.handleChange}
-							/>
-						</div>
-
-					</div>
-
-					<div className="form-group ">
-						<div className="col-7"></div>
-						
-							<button className="btn btn-primary col-1 col-mr-auto" onClick={this.handleSubmit}>Sign up</button>
-						
-
-					</div>
-				</form>
-			</div>
+			<h1>Signup form</h1>
+			<label htmlFor="username">Username: </label>
+			<input
+				type="text"
+				name="username"
+				value={this.state.username}
+				onChange={this.handleChange}
+			/>
+			<label htmlFor="password">Password: </label>
+			<input
+				type="password"
+				name="password"
+				value={this.state.password}
+				onChange={this.handleChange}
+			/>
+			<label htmlFor="confirmPassword">Confirm Password: </label>
+			<input
+				type="password"
+				name="confirmPassword"
+				value={this.state.confirmPassword}
+				onChange={this.handleChange}
+			/>
+			<button onClick={this.handleSubmit}>Sign up</button>
+		</div>
 
 		)
 	}

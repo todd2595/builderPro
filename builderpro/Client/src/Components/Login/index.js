@@ -1,9 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
-import Form from "../Form"
 import { Container, Row, Col } from "../Grid";
 import { Redirect } from 'react-router-dom'
 import axios from 'axios'
-
 class Login extends Component {
     constructor() {
         super()
@@ -11,22 +10,24 @@ class Login extends Component {
             username: '',
             password: '',
             redirectTo: null
+
         }
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleChange = this.handleChange.bind(this)
 
     }
 
-    handleChange(event) {
+    handleChange = event => {
+        const value = event.target.value;
+        const name = event.target.name;
         this.setState({
-            [event.target.name]: event.target.value
-        })
-    }
+            [name]: value
+        });
+    };
 
     handleSubmit(event) {
         event.preventDefault()
         console.log('handleSubmit')
-
         axios
             .post('/user/login', {
                 username: this.state.username,
@@ -43,7 +44,7 @@ class Login extends Component {
                     })
                     // update the state to redirect to home
                     this.setState({
-                        redirectTo: '/'
+                        redirectTo: '/home'
                     })
                 }
             }).catch(error => {
@@ -59,26 +60,38 @@ class Login extends Component {
         } else {
             return (
                 <>
-<form>
-  <div className="form-group">
-    <label>Email address</label>
-    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-    <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
-  </div>
-  <div className="form-group">
-    <label>Password</label>
-    <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
-  </div>
-  <div className="form-group form-check">
-    <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-    <label className="form-check-label" >Check me out</label>
-  </div>
-  <button type="submit" className="btn btn-primary">Submit</button>
-</form>
-                    </>
-                    )
-                }
-            }
+
+                    <div className="form-group">
+                        <label htmlFor="username">Username: </label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={this.state.username}
+                            onChange={this.handleChange}
+                            name="username"
+                            placeholder="Enter username" />
+                    </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            value={this.state.password}
+                            onChange={this.handleChange}
+                            name="password" 
+                            placeholder="Password" />
+                    </div>
+                    <div className="form-group form-check">
+                        <input type="checkbox" className="form-check-input" id="exampleCheck1" />
+                        <label className="form-check-label" >Check me out</label>
+                    </div>
+                    <button type="submit" onClick={this.handleSubmit}
+                        className="btn btn-primary">Submit</button>
+
+                </>
+            )
         }
-        
-        export default Login
+    }
+}
+
+export default Login

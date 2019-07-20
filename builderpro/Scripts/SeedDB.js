@@ -10,14 +10,31 @@ mongoose.connect(
 
 const WordSeed = [
     {
-        title:"Adult"
-    }, 
-    {
-        title:"Child"
+        title:"green"
+    },{
+        title:"long"
+    },{
+        title:"young"
+    },{
+      title:"door"
+    },{
+      title:"lamp"
+    },{
+      title:"bus"
+    },{
+      title:"lost"
+    },{
+      title:"forgive"
+    },{
+      title:"glass"
+    },{
+      title:"spoon"
     }
 ]
 
-db.Word.collection.insertMany(WordSeed)
+db.word
+  .remove({})
+  .then(() => db.word.collection.insertMany(WordSeed))
   .then(data => {
     console.log(data.result.n + " records inserted!");
     process.exit(0);

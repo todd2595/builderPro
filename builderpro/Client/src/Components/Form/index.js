@@ -5,14 +5,14 @@ function Form(props) {
   return (
     <form>
       <div className="form-group">
-        <label htmlFor="search">Search:</label>
+        <label htmlFor="search">Guess!</label>
         <input
           onChange={props.handleInputChange}
           value={props.value}
           name={props.name}
           type="text"
           className="form-control"
-          placeholder="Search For a Word"
+          placeholder="eneter word here"
           id="search"
         />
         <br />
