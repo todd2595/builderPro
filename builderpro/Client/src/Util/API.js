@@ -27,6 +27,9 @@ export default {
     getWords: function () {
         return axios.get("/api/saved");
     },
+    vocabWord: function (id) {
+        return axios.get("/api/saved/" + id );
+    },
     saveWord: function (wordData) {
         return axios.post("/api/words", wordData);
     },

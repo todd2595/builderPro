@@ -30,10 +30,10 @@ class App extends Component {
     this.setState(userObject)
   }
 
-  _logout(event) {
+    logout(event) {
 		event.preventDefault()
 		console.log('logging out')
-		axios.post('/auth/logout').then(response => {
+		axios.post('/user/logout').then(response => {
 			console.log(response.data)
 			if (response.status === 200) {
 				this.setState({
@@ -69,7 +69,9 @@ class App extends Component {
       <Router>
         <div>
           <Navbar
+          loggedIn= {this.state.loggedIn}
           name={this.state.username}
+          logout={this.state.logout}
           />
           <Switch>
             <Route exact path="/home" component={Home} />

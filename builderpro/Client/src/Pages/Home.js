@@ -6,6 +6,7 @@ import Form from "../Components/Form";
 import { List, ListItem } from "../Components/List"
 import ActionButton from "../Components/ActionButton"
 import Wrapper from "../Components/Wrapper";
+import { throws } from 'assert';
 
 
 
@@ -13,6 +14,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      populate: null,
       search: "",
       categories: [],
       class: [],
@@ -23,8 +25,9 @@ class Home extends React.Component {
       userGuess: "",
       hasGuessed: false,
       seconds: 0,
-      wordsToGuess:[],
-      words:[]
+      wordsToGuess: [],
+      words: [],
+      score: 0
     };
   }
   tick() {
@@ -32,11 +35,14 @@ class Home extends React.Component {
       seconds: state.seconds + 1
     }));
   }
+
   TypeOf = (word) => { return this.state.class.filter((elem, index) => index <= 5).join(' ') }
   Categories = (word) => { return this.state.categories.map(elem => elem.word).join(' ') }
   Ants = (word) => { return this.state.word.meta.ants[0] }
-  Syns = (word) => { if (this.state.word.meta.syns) {return this.state.word.meta.syns[0].filter((elm, index)  => index <= 5).join(" ")}
-  else{( console.log("no syns")) }}
+  Syns = (word) => {
+    if (this.state.word.meta.syns) { return this.state.word.meta.syns[0].filter((elm, index) => index <= 5).join(" ") }
+    else { (console.log("no syns")) }
+  }
   definition = (word) => { return this.state.word.shortdef }
   partOfSpeech = (word) => { return this.state.word.fl }
   firstLetter = (word) => word.charAt(0)
@@ -51,41 +57,45 @@ class Home extends React.Component {
 
 
   componentDidMount() {
-    API.getWords().then(res => this.setState({
-      wordsToGuess: res.data
-  })).catch(err => console.log(err))
-         this.interval = setInterval(() => this.tick(), 1000);
-        
-        }
+    this.interval = setInterval(() => this.tick(), 1000);
+    this.loadword();
+  }
+
+  componentWillMount() {
+
+  }
+
+  loadword = () => {
+    let x = this.getRandomInt(10)
+    API.vocabWord(x).then(res => { this.setState({
+      search:res.data[0].title
+    })
+      return this.searchWords(res.data[0].title)
+  }).catch(err => console.log(err))
+  }
+  getRandomInt = (max) => {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+
   componentWillUnmount() {
     clearInterval(this.interval);
   }
-   getRandomInt=(max)=> {
-    return Math.floor(Math.random() * Math.floor(max));
-  }
-  getword = () => {
-    let x = this.getRandomInt(10)
-    let options = this.state.wordsToGuess.map( elem => elem.title)
-    this.setState({
-      search:options[x],
-      words:options
-    })
-    this.searchWords(options[x])
-    console.log(options)
-    console.log(x)
-  }
 
   searchWords = (query) => {
-    API.FindClass(query).then((res) => this.setState({ class: res.data.typeOf }));
-    API.Thesaurus(query).then((res) => this.setState({ word: res.data[0] }));
+    API.Thesaurus(query).then((res) => { this.setState({ word: res.data[0] })
+      return this.GetHelp(this.state.word.fl, query)}).catch((err) => {console.log(err) })
+    API.FindClass(query).then((res) => this.setState({ class: res.data.typeOf }))
     API.Dictonary(query).then((res) => this.setState({ moreOfWord: res.data[0] }))
-      .then(this.GetHelp(this.state.word.fl, this.state.search))
+    
   }
 
   GetHelp = (speech, query) => {
+    this.setState({
+      populate: true
+    })
     switch (speech) {
       case "noun":
-        console.log(this.state.wordsToGuess)
+        console.log(speech, query)
         API.InsNoun(query).then((response) => {
           let categories = (response.data.slice(0, 6))
           this.setState({
@@ -104,6 +114,7 @@ class Home extends React.Component {
         break;
       default:
         console.log("??")
+        console.log(speech, query)
         break;
     }
   }
@@ -122,25 +133,30 @@ class Home extends React.Component {
 
   HandleGuess = (event) => {
     event.preventDefault();
-    this.getword();
     console.log(this.state.search)
     this.setState({
       value: event.target.value
     });
     let str = this.state.userGuess.toLowerCase().trim()
     console.log(str);
-    if (str &&str === this.state.search) {
+    if (str && str === this.state.search) {
       //  alert("you WIN!")
       console.log("You win!")
       console.log(this.state.seconds)
       alert("You got it!, your time was " + this.state.seconds)
-      this.componentDidMount()
+      this.setState({
+        word: "",
+        userGuess:"",
+        score: this.state.score + 1,
+        calls:[]
+      })
+      this.loadword();
     }
-    else{
-      console.log("loaded")
+    else {
+      console.log("wrong!", this.state.score)
+      alert('the word was ' + this.state.search)
     }
   }
-
 
   HandleActionButton = (cb, value, array) => {
     if (array.indexOf(value) === -1) {
@@ -154,104 +170,115 @@ class Home extends React.Component {
     }
   }
 
-
   render() {
-    return (
-      <Container>
-        <Row>
-          <Col size="md-4">
-            <ActionButton
-              type="success"
-              value={"Letter Count"}
-              onClick={() => this.HandleActionButton(this.letterCount, "Letter Count", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type="success"
-              value={"Part of Speech"}
-              onClick={() => this.HandleActionButton(this.partOfSpeech, "Part of Speech", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type="success"
-              value={"First Letter"}
-              onClick={() => this.HandleActionButton(this.firstLetter, "First Letter", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type="success"
-              value={"Last Letter"}
-              onClick={() => this.HandleActionButton(this.lastLetter, "Last Letter", this.state.calls)}>
-            </ActionButton>
-          </Col>
-          <Col size="md-4">
-            <ActionButton
-              type="success"
-              value={"X Letter"}
-              onClick={() => this.HandleActionButton(this.Xletter, "X letter", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type="success"
-              value={"Vowel Count"}
-              onClick={() => this.HandleActionButton(this.vowelCount, "Vowel Count", this.state.calls)}>
-            </ActionButton>
-          </Col>
-          <Col size="md-4">
-          <Form
+    if (this.state.word === null) {
+      return (
+        <Container>
+          <h2>Hello</h2>
+        </Container>
+      )
+    }
+    else {
+      return (
+        <Container>
+          <Container>
+            <h2>Score: {this.state.score} </h2>
+          </Container>
+          <Row>
+            <Col size="md-4">
+              <ActionButton
+                type="success"
+                value={"Letter Count"}
+                onClick={() => this.HandleActionButton(this.letterCount, "Letter Count", this.state.calls)}>
+              </ActionButton>
+              <ActionButton
+                type="success"
+                value={"Part of Speech"}
+                onClick={() => this.HandleActionButton(this.partOfSpeech, "Part of Speech", this.state.calls)}>
+              </ActionButton>
+              <ActionButton
+                type="success"
+                value={"First Letter"}
+                onClick={() => this.HandleActionButton(this.firstLetter, "First Letter", this.state.calls)}>
+              </ActionButton>
+              <ActionButton
+                type="success"
+                value={"Last Letter"}
+                onClick={() => this.HandleActionButton(this.lastLetter, "Last Letter", this.state.calls)}>
+              </ActionButton>
+            </Col>
+            <Col size="md-4">
+              <ActionButton
+                type="success"
+                value={"X Letter"}
+                onClick={() => this.HandleActionButton(this.Xletter, "X letter", this.state.calls)}>
+              </ActionButton>
+              <ActionButton
+                type="success"
+                value={"Vowel Count"}
+                onClick={() => this.HandleActionButton(this.vowelCount, "Vowel Count", this.state.calls)}>
+              </ActionButton>
+            </Col>
+            <Col size="md-6">
+              <ActionButton
+                type={"danger"}
+                value={"Definition"}
+                onClick={() => this.HandleActionButton(this.definition, "Definition", this.state.calls)}>
+              </ActionButton>
+              <ActionButton
+                type={"danger"}
+                value={"Syns"}
+                onClick={() => this.HandleActionButton(this.Syns, "Syns", this.state.calls)}>
+              </ActionButton>
+              <ActionButton
+                type={"danger"}
+                value={"Ants"}
+                onClick={() => this.HandleActionButton(this.Ants, "Ants", this.state.calls)}>
+              </ActionButton>
+              <ActionButton
+                value={"Type of"}
+                onClick={() => this.HandleActionButton(this.TypeOf, "Type Of", this.state.calls)}>
+              </ActionButton>
+              <ActionButton
+                value={"Categories"}
+                onClick={() => this.HandleActionButton(this.Categories, "Categories", this.state.calls)}>
+              </ActionButton>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col size="md-4">
+              <Form
                 value={this.state.userGuess}
                 handleInputChange={this.handleInputChange}
                 handleFormSubmit={this.HandleGuess}
                 name={"userGuess"}
 
               ></Form>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
 
-        <Row>
-          <Col size="md-6">
-            <ActionButton
-              type={"danger"}
-              value={"Definition"}
-              onClick={() => this.HandleActionButton(this.definition, "Definition", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type={"danger"}
-              value={"Syns"}
-              onClick={() => this.HandleActionButton(this.Syns, "Syns", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              type={"danger"}
-              value={"Ants"}
-              onClick={() => this.HandleActionButton(this.Ants, "Ants", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              value={"Type of"}
-              onClick={() => this.HandleActionButton(this.TypeOf, "Type Of", this.state.calls)}>
-            </ActionButton>
-            <ActionButton
-              value={"Categories"}
-              onClick={() => this.HandleActionButton(this.Categories, "Categories", this.state.calls)}>
-            </ActionButton>
+          <Wrapper>
+            {this.state.calls.length && this.state.word ? (
 
-          </Col>
-        </Row>
-
-        <Wrapper>
-          {this.state.calls.length && this.state.search ? (
-
+              <List>
+                {this.state.calls.map((call) =>
+                  (
+                    <ListItem key={call}>{call}
+                    </ListItem>
+                  ))}
+              </List>
+            ) : (
+                <h3>No Results to Display</h3>
+              )}
             <List>
-              {this.state.calls.map((call) =>
-                (
-                  <ListItem key={call}>{call}
-                  </ListItem>
-                ))}
-            </List>
-          ) : (
-              <h3>No Results to Display</h3>
-            )}
-          <List>
 
-          </List>
-        </Wrapper>
-      </Container>
-    );
+            </List>
+          </Wrapper>
+        </Container>
+      );
+    }
   }
+
 }
 export default Home;

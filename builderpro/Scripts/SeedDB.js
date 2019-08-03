@@ -10,25 +10,35 @@ mongoose.connect(
 
 const WordSeed = [
     {
-        title:"green"
+       title:"green",
+       id:1
     },{
-        title:"long"
+        title:"long",
+        id:2
     },{
-        title:"young"
+        title:"young",
+        id:3
     },{
-      title:"door"
+      title:"door",
+      id:4
     },{
-      title:"lamp"
+      title:"lamp",
+      id:5
     },{
-      title:"bus"
+      title:"bus",
+      id:6
     },{
-      title:"lost"
+      title:"lost",
+      id:7
     },{
-      title:"forgive"
+      title:"forgive",
+      id:8
     },{
-      title:"glass"
+      title:"glass",
+      id:9
     },{
-      title:"spoon"
+      title:"spoon",
+      id:10
     }
 ]
 

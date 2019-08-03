@@ -3,36 +3,45 @@ import React from "react";
 import { Route, Link } from 'react-router-dom'
 
 function NavBar(props) {
-  if (props.loggedIn) {
+	if (props.loggedIn) {
 		return (
 			<nav className="navbar">
-				<ul className="nav">
+				<ul className="nav justify-content-center">
 					<li className="nav-item">
-						<Link to="/" className="nav-link">
+						<Link to="/home" className="nav-link">
 							Home
 						</Link>
 					</li>
 					<li>
-						<Link to="#" className="nav-link" onClick={props.logout}>
+						{/* <button className="nav-link" onClick={() => props.logout()}>
 							Logout
-						</Link>
+						</button> */}
+					</li>
+					<li className="nav-item">
+						<a className="nav-link" href="/">
+							Change User</a>
+					</li>
+					<li className="nav-item">
+						<a href="/" className="nav-link">Hello {props.name}</a>
 					</li>
 				</ul>
 			</nav>
 		)
 	} else {
-  return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a className="navbar-brand" href="/home">
-      Home
+		return (
+			<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+				<a className="navbar-brand" href="/home">
+					Home
     </a>
-    <a className="navbar-brand" href="/">
-      Change User
+				<a className="navbar-brand" href="/">
+					Change User
     </a>
-    <span>Hello {props.name}!</span>
-  </nav>
-    )
-  }
+				<span>Hello {props.name}!</span>
+			</nav>
+
+
+		)
+	}
 }
 
 export default NavBar;

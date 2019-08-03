@@ -2,15 +2,15 @@ const db = require("../Models");
 
 // Defining methods for the wordsController
 module.exports = {
-  findAll: function(req, res) {
+  findAll: function(id, req, res) {
     db.word
-      .find(req.query)
+      .find()
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
   findById: function(req, res) {
     db.word
-      .findById(req.params.id)
+      .find({id: req.params.id})
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },

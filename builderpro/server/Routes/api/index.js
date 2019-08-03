@@ -7,7 +7,6 @@ router.route("/words")
 router.route("/saved")
 .get(WordController.findAll);
 
-// Matches with "/api/books/:id"
 router
   .route("/saved/:id")
   .get(WordController.findById)
