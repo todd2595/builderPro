@@ -70,11 +70,13 @@ router.get('/', (req, res, next) => {
     console.log('===== user!!======')
     console.log(req.user)
     if (req.user) {
-        res.json({ user: req.user })
+        res.json({ user: req.user,
+        highscore: req.highscore })
     } else {
         res.json({ user: null })
     }
 })
+
 
 router.post('/logout', (req, res) => {
     if (req.user) {

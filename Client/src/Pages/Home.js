@@ -66,13 +66,23 @@ class Home extends React.Component {
   }
 
   loadword = () => {
-    let x = this.getRandomInt(10)
-    API.vocabWord(x).then(res => { this.setState({
-      search:res.data[0].title
-    })
-      return this.searchWords(res.data[0].title)
-  }).catch(err => console.log(err))
+    const usednumbs = [];
+    let x = this.getRandomInt(10);
+    if (usednumbs.indexOf(x) === -1) {
+      API.vocabWord(x).then(res => {
+        this.setState({
+          search: res.data[0].title
+        })
+        return this.searchWords(res.data[0].title)
+      }).catch(err => console.log(err))
+      usednumbs.push(x);
+    }
+    else{
+      console.log("repeat")
+    }
+
   }
+
   getRandomInt = (max) => {
     return Math.floor(Math.random() * Math.floor(max));
   }
@@ -82,11 +92,13 @@ class Home extends React.Component {
   }
 
   searchWords = (query) => {
-    API.Thesaurus(query).then((res) => { this.setState({ word: res.data[0] })
-      return this.GetHelp(this.state.word.fl, query)}).catch((err) => {console.log(err) })
+    API.Thesaurus(query).then((res) => {
+      this.setState({ word: res.data[0] })
+      return this.GetHelp(this.state.word.fl, query)
+    }).catch((err) => { console.log(err) })
     API.FindClass(query).then((res) => this.setState({ class: res.data.typeOf }))
     API.Dictonary(query).then((res) => this.setState({ moreOfWord: res.data[0] }))
-    
+
   }
 
   GetHelp = (speech, query) => {
@@ -146,9 +158,9 @@ class Home extends React.Component {
       alert("You got it!, your time was " + this.state.seconds)
       this.setState({
         word: "",
-        userGuess:"",
+        userGuess: "",
         score: this.state.score + 1,
-        calls:[]
+        calls: []
       })
       this.loadword();
     }

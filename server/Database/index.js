@@ -4,7 +4,7 @@ mongoose.Promise = global.Promise
 
 //your local database url
 //27017 is the default mongoDB port
-const uri = 'mongodb://localhost/builderPro' 
+const uri = 'mongodb://user:password1@ds353457.mlab.com:53457/heroku_z71tnx9m' 
 
 mongoose.connect(uri , { useNewUrlParser: true } ).then(
     () => { 

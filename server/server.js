@@ -14,6 +14,7 @@ const dbConnection = require('./Database')
 
 if (process.env.NODE_ENV !== 'production'){
 	require('longjohn');
+	app.use(express.static("client/build"));
   }
 // Define middleware here
 app.use(morgan('dev'))

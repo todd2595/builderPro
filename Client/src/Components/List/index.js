@@ -5,9 +5,9 @@ import "./style.css";
 
 export function List({ children }) {
   return (
-    <div className="list-overflow-container">
-      <ul className="list-group list-group-horizontal-md">{children}</ul>
-    </div>
+    // <div className="list-overflow-container">
+      <ul className="list-group list-group-horizontal-sm">{children}</ul>
+    // </div>
   );
 }
 
