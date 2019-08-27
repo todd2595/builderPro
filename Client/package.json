@@ -2,7 +2,7 @@
   "name": "builderpro",
   "version": "0.1.0",
   "private": true,
-  "main": "./server/server.js",
+  "main": "../server/server.js",
   "proxy": "http://127.0.0.1:3001/",
   "dependencies": {
     "axios": "^0.19.0",
@@ -28,9 +28,10 @@
       "not op_mini all"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      ">0.2%",
+      "not dead",
+      "not ie <= 11",
+      "not op_mini all"
     ]
   }
 }
